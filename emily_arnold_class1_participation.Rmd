@@ -1,0 +1,21 @@
+---
+title: "Class 1 Participation"
+author: "Emily Arnold"
+date: "1/13/2020"
+output: 
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Practicing committing and pushing a document to github!
+
+
+```{r cars}
+summary(cars)
+```
+
+
