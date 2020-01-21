@@ -1,0 +1,199 @@
+---
+title: "Class 2 Participation"
+author: "Emily Arnold"
+date: "1/20/2020"
+output: 
+  md_document:
+    variant: gfm
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 999)
+
+```
+
+# Emily Arnold Class participation 1/20 (class 2)
+## R Markdown
+
+```{r loading data set}
+library(tidyverse)
+library(ggplot2)
+library(gapminder)
+library(ggthemes)
+```
+
+Let's get the data ready
+
+```{r loading data}
+
+data("gapminder")
+
+str(gapminder)
+
+```
+
+```{r blank plot}
+
+ggplot()
+
+```
+
+```{r}
+
+ggplot(data = gapminder, mapping = aes(x = year, y = pop))+
+  geom_point()
+
+#OR
+
+#do it this way to layer other data on 
+ggplot()+
+  geom_point(data = gapminder, mapping = aes(x = year, y = pop))
+
+
+```
+
+To add color...
+ 
+```{r adding color}
+ggplot(data = gapminder, mapping = aes(x = year, y = pop, col = continent))+
+  geom_point()
+```
+
+What if we aggregate by continent...
+
+```{r aggregate by continent and plot}
+gapminder %>% 
+  group_by(year, continent) %>% 
+  summarize(pop = sum(pop, na.rm = TRUE)) %>% 
+  ggplot(., mapping = aes(x = year, y = pop, col = continent))+
+  geom_point()+
+  scale_y_log10()
+```
+
+
+```{r trying a different variable}
+gapminder %>% 
+  filter(continent == "Asia") %>% 
+ggplot(., mapping = aes(x = year, y = gdpPercap, color = country))+
+  geom_point()+
+  facet_wrap(~continent)
+
+```
+
+Trying this with two numeric measures...
+
+```{r}
+
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp, size = pop, color = continent))+
+  geom_point()+
+  scale_x_log10()+
+  stat_smooth(method = 'lm')
+
+```
+
+
+```{r}
+gapminder %>% 
+  filter(continent == "Oceania") %>% 
+  # group_by(country) %>% 
+  # summarize(gdpPercap = mean(gdpPercap), lifeExp = mean(lifeExp)) %>% 
+ggplot(., mapping = aes(x = gdpPercap, y = lifeExp, shape = country))+
+  geom_point()+
+  scale_x_log10()+
+  stat_smooth(method = 'lm')
+
+```
+
+Back to square one
+
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp, color = continent))+
+  # geom_point()+
+  scale_x_log10()+
+  stat_smooth(method = 'lm')
+
+```
+
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp, linetype = continent))+
+  # geom_point()+
+  scale_x_log10()+
+  stat_smooth(method = 'lm')
+```
+
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp))+
+  geom_point(aes(color = continent, alpha = pop))+ #or you can specify an actual value, outisde the aes 
+  scale_x_log10()+
+  stat_smooth(method = 'lm')
+```
+
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp))+
+  geom_point(aes(color = continent), alpha = .3)+
+  scale_x_log10()+
+  stat_smooth(method = 'lm', mapping = aes(color = continent))
+```
+
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp))+
+  geom_point(alpha = .3)+
+  scale_x_log10()+
+  stat_smooth(method = 'lm')+
+  facet_wrap(~continent)+
+  xlab("GDP Per Capita")+
+  ylab("Life Expectancy")+
+  ggtitle("Life Expectancy By GDP per Capita", subtitle = "Faceted by Continent")
+```
+
+Getting weird again
+
+```{r}
+
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp))+
+  geom_point(alpha = .3)+
+  scale_x_log10()+
+  stat_smooth(method = 'lm')+
+  facet_wrap(~continent)+
+  xlab("GDP Per Capita")+
+  ylab("Life Expectancy")+
+  ggtitle("Life Expectancy By GDP per Capita", subtitle = "Faceted by Continent")+
+  coord_flip()
+```
+
+
+
+```{r}
+
+ggplot(data = gapminder, mapping = aes(x = continent, y = lifeExp))+
+  geom_boxplot()
+
+ggplot(data = gapminder, mapping = aes(x = continent, y = lifeExp))+
+  geom_boxplot()+
+  geom_point()+
+  coord_flip()+
+  theme_void()
+
+```
+
+```{r}
+ggplot(data = gapminder, mapping = aes(x = continent, y = lifeExp))+
+  stat_summary(fun.ymin = min,
+               fun.ymax = max,
+               fun.y = median)+
+  geom_point()+
+  coord_flip()+
+  theme_classic()
+```
+
+```{r}
+ggplot(data = gapminder, mapping = aes(x = continent, y = lifeExp))+
+  stat_summary(fun.ymin = min,
+               fun.ymax = max,
+               fun.y = median)+
+  geom_point()+
+  coord_flip()+
+  theme_classic()
+```
+
