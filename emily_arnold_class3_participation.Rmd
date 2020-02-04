@@ -1,0 +1,41 @@
+---
+title: "Emily Arnold Class Participation"
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(shiny)
+
+olympics <- read.csv(file = "C:/Users/Emily/Documents/Data Science/Data Visualization/Participation/earnold-participation/")
+```
+
+### Chart A
+
+***
+
+
+```{r}
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
