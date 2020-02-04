@@ -2,40 +2,58 @@
 title: "Emily Arnold Class Participation"
 output: 
   flexdashboard::flex_dashboard:
-    storyboard: true
+    orientation: rows
+    vertical_layout: fill
+
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(tidyverse)
 library(shiny)
+library(dplyr)
 
-olympics <- read.csv(file = "C:/Users/Emily/Documents/Data Science/Data Visualization/Participation/earnold-participation/")
+olympics <- read.csv(file = "C:/Users/Emily/Documents/Data Science/Data Visualization/Participation/earnold-participation/Summer-Olympic-medals-1976-to-2008.csv")
 ```
 
-### Chart A
+Column {data-width=650}
+-----------------------------------------------------------------------
 
-***
+### Starting with a basic table
 
-
-```{r}
+```{r olympics}
+usa_gold <- olympics %>% 
+  filter(Country == "United States") %>% 
+  group_by(Sport) %>%
+  summarize(gold = sum(Medal == "Gold"))
+print(usa_gold)
 
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Histogram of the same data
 
-```{r}
+```{r hist}
 
-
+usa_gold %>% 
+ggplot(., aes(x = Sport, y = gold))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90))
 
 ```
 
-### Chart C
+### Maybe Adding some color for gender
 
 ```{r}
+olympics %>% 
+  filter(Country == "United States") %>% 
+  group_by(Sport, Gender) %>%
+  summarize(gold = sum(Medal == "Gold")) %>% 
+  ggplot(., aes(x = Sport, y = gold))+
+  geom_col(aes(fill = Gender))+
+  theme(axis.text.x = element_text(angle = 90))
 
 ```
 
