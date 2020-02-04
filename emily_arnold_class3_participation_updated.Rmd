@@ -13,7 +13,6 @@ library(tidyverse)
 library(shiny)
 library(dplyr)
 
-#reading in file
 olympics <- read.csv(file = "C:/Users/Emily/Documents/Data Science/Data Visualization/Participation/earnold-participation/Summer-Olympic-medals-1976-to-2008.csv")
 ```
 
