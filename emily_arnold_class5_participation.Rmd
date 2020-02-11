@@ -1,0 +1,176 @@
+---
+title: "Class 5"
+author: "Emily Arnold"
+date: "2/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+#have to install plotly
+library(plotly)
+```
+
+Plotly!
+-Interactive visualizations without actual coding
+-Written in javascript
+
+Working with the diamonds dataset:
+-hover over to see individual points
+-zoom in
+
+```{r checking out dataset - Diamonds}
+head(diamonds)
+diamonds.sample <- diamonds %>% 
+  sample_n(10000)
+
+```
+
+Couple different ways to interface with plotly:
+
+```{r}
+
+plot_ly(data = diamonds, x = ~carat, y = ~price)
+plot_ly(data = diamonds, x = ~cut, y = ~price)
+
+```
+
+You could also do this tidyverse style
+
+```{r}
+diamonds %>% 
+  sample_n(100) %>% 
+plot_ly(data = ., x = ~carat, y = ~price, type = "scatter")
+```
+
+```{r}
+
+plot_ly(data = diamonds.sample, x = ~cut, y = ~price) %>% 
+  add_trace(p=., type = "scatter")
+
+```
+
+###Styling
+
+
+```{r}
+
+#specifying scatter, restricting axes and labeling
+
+plot_ly(data = diamonds.sample, x = ~carat, y = ~price) %>% 
+  add_trace(p = ., type = "scatter") %>% 
+  layout(xaxis = list(range = c(2.5,5), title = "Carat"),
+         yaxis = list(title = "Price"))
+
+```
+
+Let's improve upon this by adjusting the text that appears when you hover over a point.
+
+```{r}
+
+#change the text when you hover over points
+
+plot_ly(data = diamonds.sample, x = ~carat, y = ~price, 
+        text = ~paste0("Price: ", price, "<br> Carat: ", carat)) %>% 
+  add_trace(p = ., type = "scatter") %>% 
+  layout(xaxis = list(range = c(2.5,5), title = "Carat"),
+         yaxis = list(title = "Price"))
+
+```
+
+```{r}
+#create fake data
+lines.data <- data.frame(x = c(1:100),
+                         trace0 = rnorm(100, mean = 5)) %>% 
+  mutate(trace1 = log(trace0),
+         trace2 = trace0^2)
+
+plot_ly(data = lines.data, x = ~x) %>% 
+  add_trace(y = ~trace0, name = "Trace Zero", mode = "lines") %>% 
+  add_trace(y = ~trace1, name = "Trace One", mode = "lines+markers") %>% 
+  add_trace(y = ~trace2, name = "Trace Two", mode = "markers")            
+
+```
+
+Trying out some transformations
+
+```{r}
+
+lines.data.wide <- gather(lines.data, "trace", "number", -x)
+
+plot_ly(data = lines.data.wide, x = ~x, y = ~number, color = ~trace, mode = "line")
+
+```
+
+```{r}
+plot_ly(data = lines.data.wide, x = ~x, y = ~number, color = ~trace, mode = "line") %>% 
+  layout(xaxis = list(ticks = "outside",
+                      dtick = 10,
+                      ticklen = 5,
+                      tickwidth = 2,
+                      tickcolor = toRGB("pink"),
+                      title = "X",
+                      showgrid = FALSE,
+                      zeroline = FALSE),
+         yaxis = list(ticks = "outside",
+                      dtick = 5,
+                      ticklen = 5,
+                      tickwidth = 1,
+                      tickcolor = toRGB("pink"),
+                      showgrid = FALSE,
+                      zeroline = FALSE,
+                      title = "Trace"),
+         showlegend = TRUE,
+         legend = list(x = .1, y = 5),
+         title = "Title")
+
+```
+
+Double click on a legend entry to select just that one.
+OR single click on legend to hide it.
+
+```{r}
+
+cnt <- with(diamonds.sample, table(cut, clarity))
+
+plot_ly(data = diamonds.sample, x = ~cut, y = ~clarity, z = ~cnt) %>% 
+  add_trace(type = "histogram2dcontour",
+            contours = list(showlabels = T, 
+                            labelfont = list(color = 'white')))
+
+```
+
+Box Plots!
+
+```{r}
+
+plot_ly(data = diamonds.sample, y = ~price, color = ~cut, type = "box")
+
+#flip orientation
+plot_ly(data = diamonds.sample, x = ~price, color = ~cut, type = "box")
+
+```
+
+### 3D Finally
+
+```{r}
+
+plot_ly(data = diamonds.sample, x = ~carat, y = ~price, z = ~depth, color = ~cut)
+
+```
+
+Going back to ggplot2 - build it in ggplot and then convert it to plotly
+
+```{r}
+fig1 <- diamonds.sample %>% 
+  ggplot(data = ., aes(x = price, y = depth, color = cut))+
+  geom_point()+
+  stat_smooth()
+
+ggplotly(fig1)
+```
+
+Homework 4:
+#new dataset, use plotly
